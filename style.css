@@ -1,0 +1,664 @@
+/* Base Styles */
+:root {
+  --text-dark: #2c2c2c;
+  --text-light: #ffffff;
+  --bg-light: #f6f7fb;
+  --bg-dark: #050c2a; /* Dark Blue Header/Footer */
+  --card-bg: #ffffff;
+  --primary-color: #5d35b9; /* Purple Accent */
+  --secondary-color: #8c60f7; /* Lighter Purple button */
+  --rating-color: #ff9900; /* Orange for ratings */
+  --install-color: #39ae44; /* Green for install/uninstall */
+  --muted: #6b7280;
+  --max-width: 1200px;
+  --radius: 12px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --gap: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+}
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Header */
+.site-header {
+  background: var(--card-bg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-dark);
+}
+.logo-icon {
+  width: 32px;
+  height: 32px;
+}
+.brand {
+  font-size: 20px;
+  font-weight: 700;
+}
+.nav {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+.nav-link {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 8px 10px;
+  position: relative;
+  transition: color 0.2s;
+}
+.nav-link.active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 2px;
+  background: var(--primary-color);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: var(--secondary-color);
+  color: var(--text-light);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.btn.contribute {
+  background: var(--secondary-color);
+  font-size: 14px;
+}
+.btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  padding: 60px 0 40px;
+}
+.hero-section h1 {
+  font-size: 48px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.hero-section h1 strong {
+  color: var(--primary-color);
+}
+.hero-section p {
+  color: var(--muted);
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+.hero-image {
+  max-width: 400px;
+  margin: 40px auto 30px;
+}
+.hero-ctas {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.hero-ctas .btn {
+  padding: 12px 25px;
+  background: none;
+  border: 1px solid #ddd;
+  color: var(--text-dark);
+}
+.hero-ctas .btn:hover {
+  border-color: var(--primary-color);
+}
+.hero-ctas .btn img {
+  width: 20px;
+}
+
+/* Stats/Trusted Section */
+.stats-section {
+  text-align: center;
+  background: var(--bg-dark);
+  color: var(--text-light);
+  padding: 30px 0;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.stats-section h2 {
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+}
+.stat-card {
+  text-align: center;
+  padding: 15px;
+}
+.stat-value {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--secondary-color);
+}
+.stat-label {
+  font-size: 16px;
+  color: var(--text-light);
+  font-weight: 600;
+  margin: 5px 0;
+}
+.stat-change {
+  font-size: 12px;
+  color: #10b981; /* Green for positive change */
+}
+
+/* Trending Apps / All Apps */
+.apps-section {
+  padding-top: 20px;
+}
+.apps-section h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.apps-section > p {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--muted);
+}
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+  padding-bottom: 40px;
+}
+
+/* App Card */
+.app-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px 10px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+  min-height: 200px;
+}
+.app-card:hover {
+  transform: translateY(-5px);
+}
+.app-card-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+.app-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 5px 0 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app-card-meta {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.rating {
+  font-weight: 600;
+  color: var(--rating-color);
+}
+.download-count {
+  color: var(--install-color);
+}
+.app-card-meta .download-icon {
+  display: inline-block;
+  width: 12px;
+}
+
+.show-all-btn {
+  text-align: center;
+  padding: 20px 0 40px;
+}
+
+/* Footer */
+.site-footer {
+  background: var(--bg-dark);
+  padding: 20px 0;
+  color: var(--muted);
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-light);
+}
+.footer-text {
+  font-size: 14px;
+}
+.social-links a {
+  margin-left: 15px;
+  color: var(--text-light);
+  font-size: 18px;
+}
+
+/* All Apps Page Controls */
+.apps-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.apps-count {
+  font-weight: 700;
+  color: var(--text-dark);
+}
+.apps-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.apps-controls input,
+.apps-controls select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 250px;
+}
+
+/* App Details Page */
+.app-details-header {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  padding: 40px 0 20px;
+  border-bottom: 1px solid #eee;
+}
+.app-details-icon-container {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+.app-details-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 25px;
+  box-shadow: var(--shadow);
+}
+.app-details-info h1 {
+  font-size: 32px;
+  margin: 0 0 5px 0;
+}
+.app-details-info p {
+  color: var(--muted);
+  margin: 0 0 25px 0;
+}
+.app-stats-grid {
+  display: flex;
+  gap: 30px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+.app-stat-item {
+  padding-right: 30px;
+  border-right: 1px solid #eee;
+}
+.app-stat-item:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+.app-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--bg-dark);
+  margin-bottom: 5px;
+}
+.app-stat-label {
+  font-size: 14px;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+.install-btn-lg {
+  padding: 12px 30px;
+  font-size: 16px;
+  margin-top: 10px;
+  background: var(--install-color);
+}
+.install-btn-lg.installed {
+  background: #ccc;
+}
+
+/* Ratings Breakdown (Horizontal Bar Chart) */
+.ratings-section {
+  padding: 20px 0 40px;
+}
+.ratings-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.ratings-chart {
+  position: relative;
+  padding-bottom: 30px;
+  max-width: 800px;
+  margin-top: 20px;
+}
+.ratings-bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.star-label {
+  width: 50px;
+  text-align: left;
+  font-size: 14px;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+.rating-bar-container {
+  flex-grow: 1;
+  height: 15px;
+  background: #e5e5e5;
+  border-radius: 0;
+}
+.rating-bar {
+  height: 100%;
+  background: var(--rating-color);
+  border-radius: 0;
+}
+.rating-x-axis {
+  position: absolute;
+  bottom: -20px;
+  left: 70px;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid #ccc;
+  padding-top: 5px;
+}
+.rating-x-axis span {
+  position: relative;
+  transform: translateX(50%);
+}
+.rating-x-axis .start {
+  transform: translateX(0);
+}
+.rating-x-axis .end {
+  transform: translateX(-50%);
+}
+.description-section p {
+  line-height: 1.6;
+  margin-bottom: 15px;
+  color: var(--text-dark);
+}
+
+/* Installation Page */
+.installed-app-list {
+  padding: 40px 0;
+}
+.installed-app-item {
+  display: flex;
+  align-items: center;
+  background: var(--card-bg);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.installed-app-item img {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  margin-right: 20px;
+}
+.installed-app-details {
+  flex-grow: 1;
+}
+.installed-app-details h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.installed-app-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+.installed-app-meta .download-icon {
+  display: inline-block;
+  width: 12px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+.installed-app-meta span.rating {
+  color: var(--rating-color);
+}
+.installed-app-item button {
+  background: var(--install-color);
+  padding: 8px 15px;
+}
+.install-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Error Pages */
+.error-page {
+  text-align: center;
+  padding: 60px 20px;
+}
+.error-page img {
+  max-width: 400px;
+  margin: 30px auto;
+}
+.error-page h1 {
+  font-size: 36px;
+  color: var(--bg-dark);
+  margin-bottom: 10px;
+}
+.error-page p {
+  color: var(--muted);
+  margin-bottom: 30px;
+}
+.error-page .btn {
+  background: var(--secondary-color);
+}
+.app-not-found-image {
+  max-width: 450px !important;
+}
+
+/* --- Toast Notification Styles --- */
+#toastContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition:
+    opacity 0.5s,
+    transform 0.5s,
+    visibility 0.5s;
+  font-size: 14px;
+}
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.toast.error {
+  background-color: #ef4444; /* Red for errors/uninstalls */
+}
+
+/* --- Loading Overlay Styles --- */
+#loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#loadingOverlay.show {
+  display: flex;
+  opacity: 1;
+}
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--bg-dark);
+  border-bottom-color: var(--primary-color);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Media Queries (Responsiveness) */
+@media (max-width: 1000px) {
+  .app-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+  .header-inner {
+    justify-content: space-between;
+  }
+  .btn.contribute {
+    padding: 8px 15px;
+  }
+  .app-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stats-grid {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .app-details-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  .app-stats-grid {
+    justify-content: center;
+  }
+  .app-stat-item {
+    border-right: none;
+    padding-right: 0;
+  }
+  .apps-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .apps-controls {
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
+  .apps-controls input {
+    width: 100%;
+  }
+}
+@media (max-width: 480px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-section h1 {
+    font-size: 36px;
+  }
+  .hero-ctas {
+    flex-direction: column;
+  }
+}

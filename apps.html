@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Hero IO — Apps</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="site">
+      <header class="site-header" role="banner">
+        <div class="header-inner container">
+          <a href="index.html" class="logo">
+            <img src="assets/logo.png" alt="HERO.IO logo" class="logo-icon" />
+            <div class="brand">HERO.IO</div>
+          </a>
+
+          <nav class="nav" role="navigation" aria-label="Main">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="apps.html" class="nav-link active">Apps</a>
+            <a href="installation.html" class="nav-link">Installation</a>
+          </nav>
+
+          <a class="btn contribute" href="#" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i>
+            Contribute
+          </a>
+        </div>
+      </header>
+
+      <main class="container">
+        <section class="apps-section" style="padding-top: 40px">
+          <h2 style="text-align: center; font-size: 32px; margin-bottom: 10px">
+            Our All Applications
+          </h2>
+          <p style="text-align: center">
+            Explore All Apps on the Market developed by us. We code for Millions
+          </p>
+
+          <div class="apps-header">
+            <p class="apps-count" id="appsCount"></p>
+            <div class="apps-controls">
+              <input id="search" placeholder="Search apps" />
+              <select id="sortDropdown">
+                <option value="none">Sort By</option>
+                <option value="high-low">High-Low Downloads</option>
+                <option value="low-high">Low-High Downloads</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="appsGrid" class="app-grid" aria-live="polite"></div>
+
+          <div
+            id="noAppFound"
+            class="error-page"
+            style="display: none; text-align: center"
+          >
+            <img
+              src="assets/App-Error.png"
+              alt="No App Found Illustration"
+              style="max-width: 300px"
+            />
+            <p style="font-weight: 600">No App Found</p>
+            <p>Try refining your search query.</p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container footer-inner">
+          <div class="footer-logo">
+            <img
+              src="assets/logo.png"
+              alt="HERO.IO logo"
+              style="width: 20px; height: 20px"
+            />
+            HERO.IO
+          </div>
+          <div class="footer-text">Copyright © 2025 · All right reserved</div>
+          <div class="social-links">
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin"></i
+            ></a>
+            <a href="#" aria-label="Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook"></i
+            ></a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="utils.js"></script>
+    <script>
+      let currentApps = [...window.appsData];
+
+      function createCard(app) {
+        const el = document.createElement("article");
+        el.className = "app-card";
+        el.setAttribute("tabindex", "0");
+        el.innerHTML = `
+                <img class="app-card-image" src="${app.image}" alt="${app.title} icon" onerror="this.src='assets/demo-app (1).webp'">
+                <h3 class="app-card-title">${app.title}</h3>
+                <div class="app-card-meta">
+                    <span class="download-count">
+                        <i class="fa-solid fa-download download-icon" style="font-size: 12px; vertical-align: middle;"></i>
+                        ${formatDownloads(app.downloads)}
+                    </span>
+                    <span>•</span>
+                    <span class="rating">${app.ratingAvg} <i class="fa-solid fa-star" style="font-size:10px;"></i></span>
+                </div>
+            `;
+        el.addEventListener("click", () =>
+          navigateTo("app-details.html?id=" + app.id),
+        );
+        return el;
+      }
+
+      function renderApps(appsToRender) {
+        const grid = document.getElementById("appsGrid");
+        const noAppFound = document.getElementById("noAppFound");
+        const appsCount = document.getElementById("appsCount");
+
+        grid.innerHTML = "";
+        appsCount.textContent = `(${appsToRender.length}) Apps Found`;
+
+        if (appsToRender.length === 0) {
+          noAppFound.style.display = "block";
+          grid.style.display = "none";
+        } else {
+          noAppFound.style.display = "none";
+          grid.style.display = "grid";
+          // Render the apps (duplicated to match the demo count of 32 cards)
+          const duplicatedApps = [
+            ...appsToRender,
+            ...appsToRender,
+            ...appsToRender,
+            ...appsToRender,
+          ];
+          duplicatedApps.forEach((app) => grid.appendChild(createCard(app)));
+        }
+      }
+
+      function applyFiltersAndSort() {
+        showLoading(true);
+        const query = document.getElementById("search").value.toLowerCase();
+        const sortBy = document.getElementById("sortDropdown").value;
+
+        // 1. Filter
+        let filteredApps = window.appsData.filter(
+          (app) =>
+            app.title.toLowerCase().includes(query) ||
+            app.companyName.toLowerCase().includes(query),
+        );
+
+        // 2. Sort
+        if (sortBy === "high-low") {
+          filteredApps.sort((a, b) => b.downloads - a.downloads);
+        } else if (sortBy === "low-high") {
+          filteredApps.sort((a, b) => a.downloads - b.downloads);
+        }
+
+        currentApps = filteredApps;
+        renderApps(currentApps);
+        // Hide loading after a slight delay to allow rendering
+        setTimeout(() => showLoading(false), 100);
+      }
+
+      document
+        .getElementById("search")
+        .addEventListener("input", applyFiltersAndSort);
+      document
+        .getElementById("sortDropdown")
+        .addEventListener("change", applyFiltersAndSort);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Initial render (show all 12 apps, which are then duplicated to 32)
+        applyFiltersAndSort();
+      });
+    </script>
+  </body>
+</html>
