@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Hero IO — My Installation</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="site">
+      <header class="site-header" role="banner">
+        <div class="header-inner container">
+          <a href="index.html" class="logo">
+            <img src="assets/logo.png" alt="HERO.IO logo" class="logo-icon" />
+            <div class="brand">HERO.IO</div>
+          </a>
+
+          <nav class="nav" role="navigation" aria-label="Main">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="apps.html" class="nav-link">Apps</a>
+            <a href="installation.html" class="nav-link active">Installation</a>
+          </nav>
+
+          <a class="btn contribute" href="#" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i>
+            Contribute
+          </a>
+        </div>
+      </header>
+
+      <main class="container">
+        <section class="installed-app-list">
+          <h2 style="text-align: center; font-size: 32px; margin-bottom: 10px">
+            Your Installed Apps
+          </h2>
+          <p style="text-align: center; margin-bottom: 40px">
+            Explore All Trending Apps on the Market developed by us
+          </p>
+
+          <div class="install-controls">
+            <p><strong id="installedCount">0 Apps Found</strong></p>
+            <div class="apps-controls">
+              <select
+                id="sortInstalledDropdown"
+                style="width: 180px"
+                aria-label="Sort installed apps"
+              >
+                <option value="size-desc">Sort By Size (High to Low)</option>
+                <option value="name-asc">Sort By Name (A-Z)</option>
+                <option value="name-desc">Sort By Name (Z-A)</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="installedAppContainer"></div>
+
+          <div
+            id="noInstalledApps"
+            class="error-page"
+            style="display: none; padding: 40px 0"
+          >
+            <p style="font-weight: 600">No Apps Installed</p>
+            <p>Visit the Apps page to install your first productivity tool!</p>
+            <a href="apps.html" class="btn">Explore Apps</a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container footer-inner">
+          <div class="footer-logo">
+            <img
+              src="assets/logo.png"
+              alt="HERO.IO logo"
+              style="width: 20px; height: 20px"
+            />
+            HERO.IO
+          </div>
+          <div class="footer-text">Copyright © 2025 · All right reserved</div>
+          <div class="social-links">
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin"></i
+            ></a>
+            <a href="#" aria-label="Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook"></i
+            ></a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="utils.js"></script>
+    <script>
+      function createInstalledCard(app) {
+        const el = document.createElement("article");
+        el.className = "installed-app-item";
+        el.setAttribute("data-app-id", app.id);
+        el.innerHTML = `
+                <img src="${app.image}" alt="${app.title} icon" onerror="this.src='assets/placeholder.png'"> 
+                <div class="installed-app-details">
+                    <h3>${app.title}</h3>
+                    <div class="installed-app-meta">
+                        <span class="download-count">
+                            <i class="fa-solid fa-download download-icon" style="font-size: 12px; vertical-align: middle;"></i>
+                            ${formatDownloads(app.downloads)}
+                        </span>
+                        <span>•</span>
+                        <span class="rating">${app.ratingAvg} <i class="fa-solid fa-star" style="font-size:10px;"></i></span>
+                        <span>•</span>
+                        <span>${app.size} MB</span>
+                    </div>
+                </div>
+                <button class="btn uninstall-btn">Uninstall</button>
+            `;
+
+        // Uninstall Logic
+        el.querySelector(".uninstall-btn").addEventListener(
+          "click",
+          function () {
+            uninstallApp(app.id, app.title);
+          },
+        );
+        return el;
+      }
+
+      function uninstallApp(appId, appTitle) {
+        showLoading(true);
+        let installedApps = getInstalledApps();
+        const index = installedApps.findIndex((a) => a.id === appId);
+
+        if (index > -1) {
+          installedApps.splice(index, 1);
+          saveInstalledApps(installedApps);
+
+          // Remove from UI
+          const elementsToRemove = document.querySelectorAll(
+            `[data-app-id="${appId}"]`,
+          );
+          elementsToRemove.forEach((el) => el.remove());
+
+          showToast(`'${appTitle}' has been uninstalled.`, "error");
+          renderInstalledApps(); // Re-render to update the list
+        }
+        showLoading(false);
+      }
+
+      function renderInstalledApps() {
+        showLoading(true);
+        let installedApps = getInstalledApps();
+        const container = document.getElementById("installedAppContainer");
+        const installedCount = document.getElementById("installedCount");
+        const noInstalledApps = document.getElementById("noInstalledApps");
+
+        // Apply sorting
+        const sortBy = document.getElementById("sortInstalledDropdown").value;
+        if (sortBy === "name-asc") {
+          installedApps.sort((a, b) => a.title.localeCompare(b.title));
+        } else if (sortBy === "name-desc") {
+          installedApps.sort((a, b) => b.title.localeCompare(a.title));
+        } else if (sortBy === "size-desc") {
+          installedApps.sort((a, b) => b.size - a.size);
+        }
+
+        container.innerHTML = "";
+
+        if (installedApps.length === 0) {
+          noInstalledApps.style.display = "block";
+          installedCount.textContent = "0 Apps Found";
+        } else {
+          noInstalledApps.style.display = "none";
+          installedCount.textContent = `${installedApps.length} Apps Found`;
+          // Duplicate and render all unique installed apps for the list visual
+          const duplicatedApps = [
+            ...installedApps,
+            ...installedApps,
+            ...installedApps,
+          ];
+          duplicatedApps.forEach((app) =>
+            container.appendChild(createInstalledCard(app)),
+          );
+        }
+        showLoading(false);
+      }
+
+      document
+        .getElementById("sortInstalledDropdown")
+        .addEventListener("change", renderInstalledApps);
+      document.addEventListener("DOMContentLoaded", renderInstalledApps);
+    </script>
+  </body>
+</html>
